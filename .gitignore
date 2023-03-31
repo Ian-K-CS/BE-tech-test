@@ -1,0 +1,5 @@
+# local compiled versions of the application
+target
+
+# IntelliJ specific files
+.idea
