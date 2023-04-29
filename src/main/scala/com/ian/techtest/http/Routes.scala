@@ -1,19 +1,41 @@
 package com.ian.techtest.http
 
 import cats.effect.IO
+import com.ian.techtest.Model._
+import com.ian.techtest.Service._
 import org.http4s.HttpRoutes
 import org.http4s.dsl.io._
+import org.http4s.circe._
+import org.http4s._
+import org.http4s.implicits._
+import io.circe.generic.auto._
 
 
 object Routes {
 
   val helloWorldService = HttpRoutes.of[IO] {
-    case GET -> Root / "hello" / name => Ok(s"Hello, $name", "X-auth-token" -> s"$name") // localhost:8080/hello/{name}  // TODO how can a val, 'Ok' take in params? - let alone figure out how you're suppose to know you can add headers into it??? Drilling down into it doesn't reveal anything
+    case GET -> Root / "hello" / name => Ok(s"Hello, $name", "X-auth-token" -> s"$name") // localhost:8080/hello/{name} // TODO can't see how you pass anything into Ok??? (Ok is an object). Cmd click reveals {/* compiled code */}
     case GET -> Root / "another-route" / pathParamLength => Ok(s"${pathParamLength.length}") // localhost:8080/hello/{pathParamLength}
-    case GET -> Root / "1" / "2" / "3" => Ok("all good - this is the response body") // localhost:8080/1/2/3
+    case GET -> Root / "1" / "2" / "3" => Ok("all good - this is the response body")
     case GET -> Root / "no-content" => NoContent()
-    case req @ POST -> Root / "post-request-1" => Ok(println(req)) // TODO Not sure this works if i supply any json? How do I get to the body? what is req in this pattern?
-    case req @ POST -> Root / "post-request-2" => Ok(println(req))
+    case req @ POST -> Root / "post-request" => Ok(req.body) // response is whatever the request body is!
+    case req @ POST -> Root / "creditcards" =>
+      implicit val decoder2: EntityDecoder[IO, UserRequestData] = jsonOf[IO, UserRequestData]
+      for {
+        userData <- req.as[UserRequestData]
+        resp <- Ok(Deserialise.convert(userData))
+      } yield resp
+
+    // ** Test Stuff **
+
+    //    case req @ POST -> Root / "post-test" =>
+    //      implicit val decoder1: EntityDecoder[IO, User] = jsonOf[IO, User]
+    //      for {
+    //        // this encords the request
+    //        user <- req.as[User] // this complains if the implicit 'decoder' isn't defined - why?!
+    //        // this encodes the response
+    //        resp <- Ok(Greet(user.name).asJson)
+    //      } yield resp
   }.orNotFound
 
 }

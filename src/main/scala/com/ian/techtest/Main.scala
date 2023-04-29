@@ -2,7 +2,7 @@ package com.ian.techtest
 
 import cats.effect._
 import com.comcast.ip4s.IpLiteralSyntax
-import com.ian.techtest.http.Routes.helloWorldService
+import com.ian.techtest.http.Routes.helloWorldService // import the routes object so I can extract out the routes to a different package
 import org.http4s.ember.server.EmberServerBuilder
 
 object Main extends IOApp {
