@@ -10,7 +10,7 @@ case class RequestToServer(name: String, creditScore: Int, salary: Int)
 
 object RequestToServer {
 
-  def convert(userData: RequestToServer): Json = {
+  def serialise(userData: RequestToServer): Json = {
     RequestToServer(userData.name + " " + "successfully encoded", userData.creditScore, userData.salary).asJson
   }
 

@@ -22,7 +22,7 @@ object Routes {
       implicit val decoder2: EntityDecoder[IO, RequestToServer] = jsonOf[IO, RequestToServer]
       for {
         userData <- req.as[RequestToServer]
-        resp <- Ok(RequestToServer.convert(userData))
+        resp <- Ok(RequestToServer.serialise(userData))
       } yield resp
   }.orNotFound
 
