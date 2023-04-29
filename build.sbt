@@ -17,7 +17,6 @@ libraryDependencies ++= Seq(
   // Optional for auto-derivation of JSON codecs
   "io.circe" %% "circe-generic" % "0.14.5",
   // Optional for string interpolation to JSON model
-  "io.circe" %% "circe-literal" % "0.14.5"
+  "io.circe" %% "circe-literal" % "0.14.5",
+  "com.softwaremill.sttp.client3" %% "core" % "3.8.15"
 )
-
-//addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)

@@ -2,7 +2,6 @@ package com.ian.techtest.http
 
 import cats.effect.IO
 import com.ian.techtest.Model._
-import com.ian.techtest.Service._
 import org.http4s.HttpRoutes
 import org.http4s.dsl.io._
 import org.http4s.circe._
@@ -20,22 +19,11 @@ object Routes {
     case GET -> Root / "no-content" => NoContent()
     case req @ POST -> Root / "post-request" => Ok(req.body) // response is whatever the request body is!
     case req @ POST -> Root / "creditcards" =>
-      implicit val decoder2: EntityDecoder[IO, UserRequestData] = jsonOf[IO, UserRequestData]
+      implicit val decoder2: EntityDecoder[IO, RequestToServer] = jsonOf[IO, RequestToServer]
       for {
-        userData <- req.as[UserRequestData]
-        resp <- Ok(Deserialise.convert(userData))
+        userData <- req.as[RequestToServer]
+        resp <- Ok(RequestToServer.convert(userData))
       } yield resp
-
-    // ** Test Stuff **
-
-    //    case req @ POST -> Root / "post-test" =>
-    //      implicit val decoder1: EntityDecoder[IO, User] = jsonOf[IO, User]
-    //      for {
-    //        // this encords the request
-    //        user <- req.as[User] // this complains if the implicit 'decoder' isn't defined - why?!
-    //        // this encodes the response
-    //        resp <- Ok(Greet(user.name).asJson)
-    //      } yield resp
   }.orNotFound
 
 }
